@@ -35,6 +35,9 @@ jobs:
         run: |
           forge --version
 
+      - name: Check forge-std Directory
+        run: |
+          ls lib/forge-std/src
       - name: Run Forge fmt
         run: |
           forge fmt --check
