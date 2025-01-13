@@ -1,66 +1,153 @@
-## Foundry
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+# FundMe Smart Contract
 
-Foundry consists of:
+A simple and efficient smart contract built using **Foundry** that allows users to fund the contract by sending Ether, track the amount funded by each address, and enables the contract owner to withdraw funds. The contract includes a minimum funding requirement in USD and integrates **Chainlink's price feed** to ensure fair and accurate conversion between Ether and USD.
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## Features
+- **Fund the Contract**: Users can fund the contract by sending Ether. The contract ensures that the funding is above a specified minimum value (in USD).
+- **Track Contributions**: The contract tracks the amount funded by each user.
+- **Withdraw Funds**: Only the contract owner can withdraw the funds from the contract.
+- **Receive Ether**: The contract can also accept Ether via the `receive` or `fallback` function.
+- **Minimum Funding Requirement**: A minimum Ether contribution value is required, which is checked using Chainlink’s price feed.
+- **Security**: The contract includes a custom error for access control and a modifier to ensure only the owner can perform certain actions.
 
-## Documentation
+## Getting Started
 
-https://book.getfoundry.sh/
+### Prerequisites
 
-## Usage
+- **Foundry**: This project uses [Foundry](https://getfoundry.sh/) for smart contract development, testing, and deployment.
+- **Solidity**: This contract is written in Solidity version `^0.8.24`.
+- **Chainlink Price Feeds**: The contract uses Chainlink's AggregatorV3Interface to get the current price of Ether in USD.
 
-### Build
+### Clone the Repository
 
-```shell
-$ forge build
+To get started with the contract, clone the repository to your local machine:
+
+```bash
+git clone https://github.com/oyewoas/fund-me.git
+cd fund-me-contract
 ```
 
-### Test
+### Install Foundry
 
-```shell
-$ forge test
+Make sure to install Foundry and its dependencies if you haven't already:
+
+```bash
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
 ```
 
-### Format
+### Install Dependencies
 
-```shell
-$ forge fmt
+Install the necessary dependencies for the project:
+
+```bash
+forge install
 ```
 
-### Gas Snapshots
+### Available Commands
 
-```shell
-$ forge snapshot
+Here are the commands available via `make`:
+
+#### Clean the Repo
+
+```bash
+make clean
 ```
 
-### Anvil
+#### Remove Modules
 
-```shell
-$ anvil
+```bash
+make remove
 ```
 
-### Deploy
+#### Install Dependencies
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```bash
+make install
 ```
 
-### Cast
+This installs the necessary dependencies for the contract, including:
+- `cyfrin/foundry-devops`
+- `smartcontractkit/chainlink-brownie-contracts`
+- `foundry-rs/forge-std`
 
-```shell
-$ cast <subcommand>
+#### Update Dependencies
+
+```bash
+make update
 ```
 
-### Help
+#### Build the Contract
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
+```bash
+make build
 ```
+
+#### Test the Contract
+
+```bash
+make test
+```
+
+#### Deploy to Local Network
+
+```bash
+make deploy
+```
+
+To deploy the contract to a local network, use the following command:
+
+```bash
+make deploy NETWORK_ARGS="--rpc-url http://localhost:8545 --private-key YOUR_PRIVATE_KEY --broadcast"
+```
+
+#### Deploy to Sepolia Network
+
+```bash
+make deploy-sepolia
+```
+
+#### Deploy to zkSync
+
+```bash
+make deploy-zk
+```
+
+#### Fund the Contract
+
+```bash
+make fund SENDER_ADDRESS="your_senders_address" NETWORK_ARGS="--rpc-url http://localhost:8545 --private-key YOUR_PRIVATE_KEY"
+```
+
+#### Withdraw from the Contract
+
+```bash
+make withdraw SENDER_ADDRESS="your_senders_address" NETWORK_ARGS="--rpc-url http://localhost:8545 --private-key YOUR_PRIVATE_KEY"
+```
+
+### Interacting with the Contract
+
+1. **Funding the Contract**:
+
+   Users can fund the contract with a minimum amount of Ether (set as `5 USD`). To do this, they need to send Ether to the contract by calling the `fund()` function.
+
+   Example:
+
+   ```solidity
+   fundMe.fund{value: 1 ether}();
+   ```
+
+2. **Withdrawing Funds**:
+
+   Only the contract owner can withdraw funds. The owner can call the `withdraw()` or `cheaperWithdraw()` functions to withdraw the contract balance to their address.
+
+   Example:
+
+   ```solidity
+   fundMe.withdraw();
+   ```
+
+### License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
